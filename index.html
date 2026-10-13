@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Srinu's Universe</title>
+    <style>
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --racing-red: #e10600;
+            --racing-black: #15151e;
+            --racing-gray: #38383f;
+            --racing-silver: #e8e8e8;
+            --racing-white: #ffffff;
+            --racing-yellow: #ffd700;
+            --racing-blue: #0066cc;
+            --card-bg: rgba(255, 255, 255, 0.85);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--racing-black);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .video-container video {
+            min-width: 100%;
+            min-height: 100%;
+            object-fit: cover;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+        .audio-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: var(--card-bg);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--racing-red);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .audio-controls:hover {
+            transform: scale(1.1);
+            background: var(--racing-red);
+        }
+
+        .audio-controls:hover .audio-icon {
+            color: white;
+        }
+
+        .audio-icon {
+            font-size: 24px;
+            color: var(--racing-red);
+            transition: color 0.3s ease;
+        }
+
+
+        section {
+            min-height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .hero {
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--racing-red), var(--racing-yellow));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(225, 6, 0, 0.3);
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 10%;
+            width: 80%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--racing-red), transparent);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--racing-silver);
+            max-width: 600px;
+            margin: 1rem auto;
+        }
+
+       
+        .profile-section {
+            padding: 4rem 2rem;
+        }
+
+        .profile-content {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .profile-photo {
+            flex: 0 0 300px;
+            position: relative;
+        }
+
+        .profile-photo::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, var(--racing-red), var(--racing-yellow), var(--racing-red));
+            border-radius: 25px;
+            z-index: -1;
+        }
+
+        .profile-photo img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 20px;
+            border: 3px solid var(--racing-black);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, #333, #555);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--racing-silver);
+        }
+
+        .profile-info {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 2px solid var(--racing-red);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--racing-red), var(--racing-yellow), var(--racing-red));
+        }
+
+        .info-item {
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed var(--racing-gray);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: var(--racing-red);
+            display: inline-block;
+            min-width: 120px;
+        }
+
+       
+        .skills-section h2,
+        .connect-section h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: var(--racing-white);
+            position: relative;
+            display: inline-block;
+        }
+
+        .skills-section h2::after,
+        .connect-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--racing-red), transparent);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .skill-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 2px solid var(--racing-red);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--racing-red), var(--racing-yellow), var(--racing-red));
+        }
+
+        .skill-card h3 {
+            color: var(--racing-red);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .skill-icon {
+            width: 30px;
+            height: 30px;
+            background: var(--racing-red);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .skill-card p {
+            color: var(--racing-black);
+            line-height: 1.6;
+        }
+
+       
+        .speed-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 10px,
+                var(--racing-red) 10px,
+                var(--racing-red) 20px
+            );
+            opacity: 0.7;
+        }
+
+        .speed-line.top {
+            top: 20%;
+        }
+
+        .speed-line.bottom {
+            bottom: 20%;
+        }
+
+       
+        .connect-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .connect-item {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 2px solid var(--racing-blue);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .connect-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--racing-blue);
+        }
+
+        .connect-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--racing-red);
+        }
+
+        .connect-item:focus {
+            outline: 2px solid var(--racing-red);
+            outline-offset: 2px;
+        }
+
+        .connect-label {
+            font-weight: bold;
+            color: var(--racing-blue);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+       
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(21, 21, 30, 0.8);
+            border-top: 3px solid var(--racing-red);
+        }
+
+        footer p {
+            font-size: 1.5rem;
+            color: var(--racing-silver);
+            letter-spacing: 3px;
+            position: relative;
+            display: inline-block;
+        }
+
+        footer p::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--racing-red), transparent);
+        }
+
+       
+        @media (max-width: 768px) {
+            .profile-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-photo {
+                flex: 0 0 250px;
+            }
+            
+            .profile-photo img {
+                height: 250px;
+            }
+            
+            .info-label {
+                min-width: 100px;
+            }
+            
+            section {
+                padding: 1rem;
+            }
+            
+            .skills-grid,
+            .connect-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-photo {
+                flex: 0 0 200px;
+            }
+            
+            .profile-photo img {
+                height: 200px;
+            }
+            
+            .info-card,
+            .skill-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+   
+    <div class="video-container">
+        <video autoplay muted loop playsinline>
+            <source src="123.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="123_1.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+   
+    <div class="audio-controls" onclick="document.getElementById('bgMusic').play(); document.getElementById('bgMusic').muted = false;">
+        <div class="audio-icon">♪</div>
+    </div>
+
+
+   
+    <section class="hero">
+        <div class="container">
+            <h1>Srinu's Universe</h1>
+            <p>Accelerating through technology, creativity, and innovation</p>
+        </div>
+    </section>
+
+    
+    <section class="profile-section">
+        <div class="speed-line top"></div>
+        <div class="container">
+            <div class="profile-content">
+                <div class="profile-photo">
+                    <img src="profiler.jpg" alt="Photo of Venkata Srinivasarao">
+                </div>
+                <div class="profile-info">
+                    <div class="info-card">
+                        <div class="info-item">
+                            <span class="info-label">Name:</span>
+                            Venkata Srinivasarao
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">DOB:</span>
+                            17-01-2007
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Age:</span>
+                            18/19
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Studying:</span>
+                            CSE in Scaler School of Technology
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="speed-line bottom"></div>
+    </section>
+
+  
+    <section class="skills-section">
+        <div class="container">
+            <h2>Skills & Interests</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>
+                        <span class="skill-icon">⚡</span>
+                        Skills
+                    </h3>
+                    <p>Expert in Editing, 3 years experience in tykewendo, Stylish Dancer and many more</p>
+                </div>
+                <div class="skill-card">
+                    <h3>
+                        <span class="skill-icon">❤️</span>
+                        Hobbies / Interests
+                    </h3>
+                    <p>Love exploring Things, Nature Lover, Enthusiastic Tech Researcher, and many more</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   
+    <section class="connect-section">
+        <div class="container">
+            <h2>Connect with me</h2>
+            <div class="connect-grid">
+                <a href="mailto:avsv6731@gmail.com" class="connect-item">
+                    <span class="connect-label">Email</span>
+                    avsv6731@gmail.com
+                </a>
+                <a href="https://www.linkedin.com/in/yourprofile" class="connect-item" target="_blank">
+                    <span class="connect-label">LinkedIn</span>
+                    https://www.linkedin.com/in/srinu
+                </a>
+                <a href="https://github.com/vsv-221922" class="connect-item" target="_blank">
+                    <span class="connect-label">GitHub</span>
+                    github.com/vsv-221922
+                </a>
+                <div class="connect-item">
+                    <span class="connect-label">And many more</span>
+                    Exploring new connections...
+                </div>
+            </div>
+        </div>
+    </section>
+
+   
+    <footer>
+        <p>© 2026 Venkata Srinivasarao | Built with ❤️ & Speed</p>
+    </footer>
+</body>
+</html>
