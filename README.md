@@ -9,7 +9,7 @@
 
 **A high-energy, racing-themed personal portfolio website featuring immersive video backgrounds, background music, and smooth scroll-snap navigation.**
 
-[🔗 Live Demo](#) · [📫 Contact Me](mailto:avsv6731@gmail.com) · [🐛 Report Bug](https://github.com/vsv-221922/End-Term-Portfolio-Project/issues)
+[🔗 Live Demo](https://vsv-221922.github.io/End-Term-Portfolio-Project/) · [📫 Contact Me](mailto:avsv6731@gmail.com) · [🐛 Report Bug](https://github.com/vsv-221922/End-Term-Portfolio-Project/issues)
 
 ---
 
